@@ -14,12 +14,32 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
-    Left = 40
-    Top = 128
+    Left = 200
+    Top = 96
     Width = 75
     Height = 25
     Caption = 'Sel Dir'
     TabOrder = 0
     OnClick = Button1Click
+  end
+  object Edit1: TEdit
+    Left = 48
+    Top = 96
+    Width = 137
+    Height = 21
+    TabOrder = 1
+    Text = 'D:\TEMP\2023-08-19'
+  end
+  object bGoClick: TButton
+    Left = 280
+    Top = 96
+    Width = 75
+    Height = 25
+    Caption = 'bGoClick'
+    TabOrder = 2
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 232
+    Top = 40
   end
 end
