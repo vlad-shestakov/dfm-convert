@@ -37,6 +37,7 @@ object Form1: TForm1
     Height = 25
     Caption = 'bGoClick'
     TabOrder = 2
+    OnClick = bGoClickClick
   end
   object OpenDialog1: TOpenDialog
     Left = 232
