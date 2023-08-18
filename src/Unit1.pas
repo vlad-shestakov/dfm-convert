@@ -4,12 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, mirror, mckCtrls;
+  Dialogs, StdCtrls;
 
 type
   TForm1 = class(TForm)
     Button1: TButton;
-    Label1: TKOLLabel;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
