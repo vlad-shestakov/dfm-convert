@@ -3,3 +3,4 @@
 /res/components/*
 *.~*
 /dcu/*.dcu
+*.ddp
