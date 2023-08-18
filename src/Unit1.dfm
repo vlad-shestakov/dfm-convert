@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 192
   Top = 125
-  Width = 1305
-  Height = 675
-  Caption = #65533#65533#65533#65533
+  Width = 617
+  Height = 427
+  Caption = 'Project 2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,11 +14,11 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
-    Left = 200
-    Top = 208
+    Left = 40
+    Top = 128
     Width = 75
     Height = 25
-    Caption = #65533#65533#65533#65533
+    Caption = 'Sel Dir'
     TabOrder = 0
     OnClick = Button1Click
   end
