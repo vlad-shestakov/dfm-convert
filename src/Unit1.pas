@@ -76,7 +76,8 @@ var
   Flag, UnFlag: Boolean; // Есть Unicode строка
   Idx, x: Integer;
   st : string;
-  FR, FW: Text;
+  //FR, FW: Text;
+  FR, FW: TextFile;
   
 	//=============================
 	procedure InitSBMsg(pc: PChar);
