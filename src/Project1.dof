@@ -90,10 +90,10 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=
-UnitOutputDir=
-PackageDLLOutputDir=
-PackageDCPOutputDir=
+OutputDir=../bin
+UnitOutputDir=../dcu
+PackageDLLOutputDir=../bpl
+PackageDCPOutputDir=../dcp
 SearchPath=
 Packages=vcl;rtl;vclactnband;vclx;dbrtl;vcldb
 Conditionals=
@@ -141,3 +141,18 @@ C:\Program Files (x86)\Borland\Delphi7\Bin\dclmid70.bpl=Borland MyBase DataAcces
 c:\program files (x86)\borland\delphi7\Bin\dcldss70.bpl=Borland Decision Cube Components
 C:\Program Files (x86)\Borland\Delphi7\Bin\dcltee70.bpl=TeeChart Components
 c:\program files (x86)\borland\delphi7\Bin\dclmcn70.bpl=Borland DataSnap Connection Components
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlUnitOutputDirectory]
+Count=1
+Item0=../dcu
+[HistoryLists\hlOutputDirectorry]
+Count=1
+Item0=../bin
+[HistoryLists\hlBPLOutput]
+Count=1
+Item0=../bpl
+[HistoryLists\hlDCPOutput]
+Count=1
+Item0=../dcp
