@@ -1,0 +1,4 @@
+/_old/*
+/bin/*.exe
+/res/components/*
+*.~*
