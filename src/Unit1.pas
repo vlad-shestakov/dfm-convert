@@ -14,10 +14,15 @@ type
     OpenDialog1: TOpenDialog;
     Button1: TButton;
     Edit1: TEdit;
+    lDir: TKOLLabel;
+    Label1: TKOLLabel;
+    bGoClick: TButton;
     procedure Button1Click(Sender: TObject);
     procedure bOpenDirClick(Sender: PObj);
+    procedure bGoClickClick(Sender: TObject);
   private
-    { Private declarations }
+    { Private declarations }      
+    DirPath: string;
   public
     { Public declarations }
   end;
@@ -50,6 +55,15 @@ begin
       Edit1.Text), PChar(Form1.Caption), MB_ICONSTOP);
     Exit;
   end;
+
+  //Form.StatusText[0] := '';
+  //Form.StatusText[1] := '';
+  ProgressBar1.Progress := 0;
+  //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
+  DirPath := IncludeTrailingPathDelimiter(Edit1.Text);
+  lDir.Caption := DirPath; //MinimizeName(DirPath, lDir.Canvas.Handle, 256);
+  // OpenDirDialog1.InitialPath := DirPath;
+  OpenDialog1.InitialDir := DirPath;
 
 
 end;
@@ -84,6 +98,12 @@ begin
   lDir.Caption := MinimizeName(DirPath, lDir.Canvas.Handle, 256);
   OpenDirDialog1.InitialPath := DirPath;
   }
+end;
+
+procedure TForm1.bGoClickClick(Sender: TObject);
+begin
+           
+    ShowMessage('Привет');
 end;
 
 end.
