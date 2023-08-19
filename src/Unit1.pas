@@ -29,6 +29,8 @@ var
 
 implementation
 
+uses FormatUtils;
+
 {$R *.dfm}
 
 //====================
@@ -99,7 +101,7 @@ var
 
     for Idx := 0 to DL.Count - 1 do
 		  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
-      MaxProgress := MaxProgress + 1; //DLFileSize(DL, Idx);
+      MaxProgress := MaxProgress + DLFileSize(DL, Idx);
 
     lbMaxProgress.Caption := IntToStr(MaxProgress);
 	end;
@@ -145,8 +147,9 @@ begin
         UnFlag := TRUE;
         //ProgressBar1.Progress := // Размер файла минус считанные байты
         //  ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
-        //MoveFileEx(PChar(DirPath + DL.Names[Idx]),
-        //  PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
+        lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + (DLFileSize(DL, Idx) - x));
+        MoveFileEx(PChar(DirPath + DL.Names[Idx]),
+          PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
         break; // Выход из чтения файла
       end;
     end; // while
@@ -155,10 +158,10 @@ begin
       CloseFile(FR);
   end; // for
 
-  {
   if not UnFlag then
   begin
-    Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
+    //Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
+    lbStatusText.Caption := 'Unicode в dfm-файлах отсутствует.';
     DL.Free;
     Exit;
   end;
@@ -167,8 +170,9 @@ begin
 
   if DL.Count = 0 then
   begin
-    Form.StatusText[0] := 'Не могу найти файлы *.dfm.unic...';
-    Form.StatusText[1] := 'ВНИМАНИЕ.';
+    //Form.StatusText[0] := 'Не могу найти файлы *.dfm.unic...';
+    //Form.StatusText[1] := 'ВНИМАНИЕ.';
+    lbStatusText.Caption := 'Не могу найти файлы *.dfm.unic...';
     DL.Free;
     Exit;
   end;
@@ -179,7 +183,8 @@ begin
 
   for Idx := 0 to DL.Count - 1 do
   begin
-    Form.StatusText[1] := PChar(DL.Names[Idx]);
+    //Form.StatusText[1] := PChar(DL.Names[Idx]);
+    lbStatusText.Caption := PChar(DL.Names[Idx]);
     st := DirPath + DL.Names[Idx];
     AssignFile(FR, st);
     Reset(FR); // Чтение
@@ -190,7 +195,7 @@ begin
     while not Eof(FR) do
     begin
       ReadLn(FR, st);
-      ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
+      //ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
       if isStrUnic(st) then
       begin
         //== Находим первый символ переводимой строки
@@ -214,8 +219,9 @@ begin
     CloseFile(FW);
   end;   // for
   DL.Free;
-  Form.StatusText[0] := 'Готово.';
-	}
+  //Form.StatusText[0] := 'Готово.';
+  lbStatusText.Caption := 'Готово.';
+
 end;
 
 end.
