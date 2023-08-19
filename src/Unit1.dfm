@@ -101,7 +101,7 @@ object Form1: TForm1
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
     end
-    object Edit1: TEdit
+    object edDir: TEdit
       Left = 32
       Top = 2
       Width = 225

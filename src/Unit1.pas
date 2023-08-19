@@ -9,7 +9,7 @@ uses
 type
   TForm1 = class(TForm)
     Button1: TButton;
-    Edit1: TEdit;
+    edDir: TEdit;
     OpenDialog1: TOpenDialog;
     bGoClick: TButton;
     lbStatusText: TLabel;
@@ -67,25 +67,25 @@ begin
   //ShowMessage(OpenDialog1.FileName);
   //if not DirectoryExists(OpenDirDialog1.Path) then
   //if not DirectoryExists(OpenDialog1.FileName) then
-  if not DirectoryExists(Edit1.Text) then
+  if not DirectoryExists(edDir.Text) then
   begin
     MessageBox(0, PChar('Can''t open Dir' + #13#10 +
       //OpenDirDialog1.Path), PChar(Form.Caption), MB_ICONSTOP);
-      Edit1.Text), PChar(Form1.Caption), MB_ICONSTOP);
+      edDir.Text), PChar(Form1.Caption), MB_ICONSTOP);
     Exit;
   end;
 
   //Form.StatusText[0] := '';
   //Form.StatusText[1] := '';
   //lbStatusText.Caption := '';
-  ChangeStatus('Selected catalog - ' + Edit1.Text);
-  AddToLog('Selected catalog - ' + Edit1.Text);
+  ChangeStatus('Selected catalog - ' + edDir.Text);
+  AddToLog('Selected catalog - ' + edDir.Text);
   AddToLog('');
   //ProgressBar1.Progress := 0;
   ProgressBar1.Position := 0;
   lbProgressBar1.Caption := '0';
   //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
-  DirPath := IncludeTrailingPathDelimiter(Edit1.Text);
+  DirPath := IncludeTrailingPathDelimiter(edDir.Text);
   //lDir.Caption := DirPath; //MinimizeName(DirPath, lDir.Canvas.Handle, 256);
   // OpenDirDialog1.InitialPath := DirPath;
   // OpenDialog1.InitialDir := DirPath;
@@ -328,11 +328,12 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   EXT_DEF := 'dfm';
+  edDir.Text := ExtractFilePath(Application.ExeName);
+  // ExtractFilePath(ParamStr(0));
 end;
 
 procedure TForm1.edExtExit(Sender: TObject);
 begin
-
   SetExtention(edExt.Text);
 end;
 
