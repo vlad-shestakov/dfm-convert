@@ -1,8 +1,10 @@
 /_old/*
 /bin/*.exe
+/bin/test*
 /test/*
 /res/components/*
 *.~*
 /dcu/*.dcu
 *.ddp
 /resources/ico/*
+*.dcu
