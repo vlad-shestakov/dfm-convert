@@ -1,10 +1,10 @@
-object Form1: TForm1
+object fromMain: TfromMain
   Left = 192
   Top = 125
   Width = 697
   Height = 547
   BorderWidth = 6
-  Caption = 'DFM Converter'
+  Caption = 'MainForm'
   Color = clBtnFace
   Constraints.MinHeight = 330
   Constraints.MinWidth = 390
@@ -310,7 +310,7 @@ object Form1: TForm1
     object lbStatusText: TLabel
       Left = 8
       Top = 24
-      Width = 33
+      Width = 18
       Height = 13
       Caption = '123'
       Visible = False

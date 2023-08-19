@@ -1,4 +1,4 @@
-unit Unit1;
+unit MainForm;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls, KOL, ComCtrls, ExtCtrls, AppEvnts;
 
 type
-  TForm1 = class(TForm)
+  TfromMain = class(TForm)
     Button1: TButton;
     edDir: TEdit;
     OpenDialog1: TOpenDialog;
@@ -43,7 +43,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  fromMain: TfromMain;
 
 implementation
 
@@ -54,7 +54,7 @@ uses FormatUtils;
 //====================
 //== ВЫБОР КАТАЛОГА ==
 //====================
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TfromMain.Button1Click(Sender: TObject);
 begin
   //if not OpenDirDialog1.Execute then
   {if not OpenDialog1.Execute then
@@ -71,7 +71,7 @@ begin
   begin
     MessageBox(0, PChar('Can''t open Dir' + #13#10 +
       //OpenDirDialog1.Path), PChar(Form.Caption), MB_ICONSTOP);
-      edDir.Text), PChar(Form1.Caption), MB_ICONSTOP);
+      edDir.Text), PChar(fromMain.Caption), MB_ICONSTOP);
     Exit;
   end;
 
@@ -95,7 +95,7 @@ end;
 //===================================
 //== ПЕРЕВОД DFM ИЗ UNICODE В ANSI ==
 //===================================
-procedure TForm1.bGoClickClick(Sender: TObject);
+procedure TfromMain.bGoClickClick(Sender: TObject);
 const
   UNIC = '.unic';
 var
@@ -291,23 +291,23 @@ begin
 
 end;
 
-procedure TForm1.AddToLog(s :string);
+procedure TfromMain.AddToLog(s :string);
 begin
   mmLog.Lines.Add(s);
 end;
 
-procedure TForm1.ClearLog;
+procedure TfromMain.ClearLog;
 begin
   mmLog.Lines.Clear;
 end;
 
-procedure TForm1.ChangeStatus(s: string);
+procedure TfromMain.ChangeStatus(s: string);
 begin
   //lbStatusText.Caption := s;
   StatusBar1.Panels[0].Text := s;
 end;
 
-procedure TForm1.SetExtention(s: string);
+procedure TfromMain.SetExtention(s: string);
 begin
   if s = '' then
     s := EXT_DEF;
@@ -318,21 +318,22 @@ end;
 
 
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TfromMain.FormShow(Sender: TObject);
 begin
   //lbStatusText.Caption := '';
   ChangeStatus('');
   SetExtention(EXT_DEF);
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TfromMain.FormCreate(Sender: TObject);
 begin
   EXT_DEF := 'dfm';
   edDir.Text := ExtractFilePath(Application.ExeName);
+  fromMain.Caption := 'DFM Converter';
   // ExtractFilePath(ParamStr(0));
 end;
 
-procedure TForm1.edExtExit(Sender: TObject);
+procedure TfromMain.edExtExit(Sender: TObject);
 begin
   SetExtention(edExt.Text);
 end;
