@@ -66,8 +66,8 @@ begin
   //Form.StatusText[0] := '';
   //Form.StatusText[1] := '';
   //lbStatusText.Caption := '';
-  ChangeStatus('Выбран каталог - ' + Edit1.Text);
-  AddToLog('Выбран каталог - ' + Edit1.Text);
+  ChangeStatus('Selected catalog - ' + Edit1.Text);
+  AddToLog('Selected catalog - ' + Edit1.Text);
   AddToLog('');
   //ProgressBar1.Progress := 0;
   ProgressBar1.Position := 0;
