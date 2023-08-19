@@ -42,7 +42,7 @@ procedure LoadFromINI;
 	    try
 		    SetExtention(Ini.ReadString(iniSectionName, 'ext', EXT_DEF));
 		    IsSaveDirPath := Ini.ReadBool(iniSectionName,'is_save_dir_path',IS_SAVE_DIR_PATH_DEF);
-		    if not IsSaveDirPath then
+		    if IsSaveDirPath then
 		      DirPath := Ini.ReadString(iniSectionName,'dir_path', DIR_PATH_DEF);
 		    SetDirPath(DirPath);
 	    finally
