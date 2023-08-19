@@ -106,7 +106,7 @@ Launcher=
 UseLauncher=0
 DebugCWD=
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0
@@ -117,17 +117,17 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1049
+Locale=2073
 CodePage=1251
 [Version Info Keys]
-CompanyName=
-FileDescription=
+CompanyName=Vladimir Shestakov
+FileDescription=DFM file converter
 FileVersion=1.0.0.0
-InternalName=
+InternalName=dfmconvert.exe
 LegalCopyright=
 LegalTrademarks=
-OriginalFilename=
-ProductName=
+OriginalFilename=dfmconvert.exe
+ProductName=DFM file converter
 ProductVersion=1.0.0.0
 Comments=
 [Excluded Packages]
