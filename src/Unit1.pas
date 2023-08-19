@@ -19,15 +19,25 @@ type
     mmLog: TMemo;
     pnTop: TPanel;
     ApplicationEvents1: TApplicationEvents;
+    Label1: TLabel;
+    StatusBar1: TStatusBar;
+    Label2: TLabel;
+    edExt: TEdit;
+    Label3: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure bGoClickClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure edExtExit(Sender: TObject);
   private
     { Private declarations }      
     DirPath: string;
-    procedure AddToLog(Str :String);
+    Ext: string;
+    EXT_DEF: string;
+    procedure AddToLog(s: string);
     procedure ClearLog;
-    procedure ChangeStatus(Str: String);
+    procedure ChangeStatus(s: string);
+    procedure SetExtention(s: string);
   public
     { Public declarations }
   end;
@@ -87,9 +97,9 @@ end;
 //===================================
 procedure TForm1.bGoClickClick(Sender: TObject);
 const
-  DFM = '*.dfm';
   UNIC = '.unic';
 var
+  DFM: string;
   DL: PDirList;
   Flag, UnFlag: Boolean; // Есть Unicode строка
   Idx, x, MaxProgress: Integer;
@@ -127,19 +137,20 @@ var
 	//=============================
 
 begin
-
+  DFM := '*.' + Ext;   // *.dfm
   DL := NewDirListEx(DirPath, DFM, 0);
   DL.Sort([sdrByExt]);
-  ClearLog;
+  ClearLog;          
+  AddToLog('DFM - ' + DFM);
 
   if (DL.Count = 0) then
   begin
     //Form.StatusText[0] := 'В каталоге нет dfm-файлов.';
     //lbStatusText.Caption := 'В каталоге нет dfm-файлов.';
-    //lbStatusText.Caption := 'DFM-files not found.';
+    //lbStatusText.Caption := Ext + '-files not found.';
     ChangeStatus('DFM-files not found.');
     AddToLog('');
-    AddToLog('DFM-files not found.');
+    AddToLog(Ext + '-files not found.');
     AddToLog('');
     DL.Free;
     Exit; // Выход, если dfm в каталоге нет.
@@ -195,9 +206,9 @@ begin
     //Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
     //lbStatusText.Caption := 'Unicode в dfm-файлах отсутствует.';
     //lbStatusText.Caption := 'DFM-files do not contain Unicode.';
-    ChangeStatus('DFM-files do not contain Unicode.');
+    ChangeStatus(Ext + '-files do not contain Unicode.');
     AddToLog('');
-    AddToLog('DFM-files do not contain Unicode.');
+    AddToLog('Done. ' + Ext + '-files do not contain Unicode.');
     AddToLog('');
     DL.Free;
     Exit;
@@ -211,9 +222,9 @@ begin
     //Form.StatusText[1] := 'ВНИМАНИЕ.';
     //lbStatusText.Caption := 'Не могу найти файлы *.dfm.unic...';
     //lbStatusText.Caption := 'Files *.dfm.unic not found';
-    ChangeStatus('Files *.dfm.unic not found');
+    ChangeStatus('Files *.' + Ext + '.unic not found');
     AddToLog('');
-	  AddToLog('Files *.dfm.unic not found');
+	  AddToLog('Files *.' + Ext + '.unic not found');
 	  AddToLog('');
 	
     DL.Free;
@@ -280,14 +291,9 @@ begin
 
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.AddToLog(s :string);
 begin
-  lbStatusText.Caption := '';
-end;
-
-procedure TForm1.AddToLog(Str :String);
-begin
-  mmLog.Lines.Add(Str);
+  mmLog.Lines.Add(s);
 end;
 
 procedure TForm1.ClearLog;
@@ -295,11 +301,40 @@ begin
   mmLog.Lines.Clear;
 end;
 
-procedure TForm1.ChangeStatus(Str: String);
+procedure TForm1.ChangeStatus(s: string);
 begin
-  lbStatusText.Caption := Str;
+  //lbStatusText.Caption := s;
+  StatusBar1.Panels[0].Text := s;
+end;
+
+procedure TForm1.SetExtention(s: string);
+begin
+  if s = '' then
+    s := EXT_DEF;
+
+  Ext := UpperCase(s);
+  edExt.Text := Ext;
+end;
+
+
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  //lbStatusText.Caption := '';
+  ChangeStatus('');
+  SetExtention(EXT_DEF);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  EXT_DEF := 'dfm';
+end;
+
+procedure TForm1.edExtExit(Sender: TObject);
+begin
+
+  SetExtention(edExt.Text);
 end;
 
 end.
-
 
