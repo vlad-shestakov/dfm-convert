@@ -4,3 +4,4 @@
 *.~*
 /dcu/*.dcu
 *.ddp
+/resources/ico/*

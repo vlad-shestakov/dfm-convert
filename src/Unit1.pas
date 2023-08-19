@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, KOL, ComCtrls;
+  Dialogs, StdCtrls, KOL, ComCtrls, ExtCtrls, AppEvnts;
 
 type
   TForm1 = class(TForm)
@@ -17,6 +17,8 @@ type
     lbMaxProgress: TLabel;
     ProgressBar1: TProgressBar;
     mmLog: TMemo;
+    pnTop: TPanel;
+    ApplicationEvents1: TApplicationEvents;
     procedure Button1Click(Sender: TObject);
     procedure bGoClickClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -152,16 +154,18 @@ begin
   UnFlag := FALSE;
   for Idx := 0 to DL.Count - 1 do
   begin
+    Application.ProcessMessages();
     Flag := FALSE;
     //Form.StatusText[1] := PChar(DL.Names[Idx]);
     //lbStatusText.Caption := PChar(DL.Names[Idx]);
-    ChangeStatus(PChar(DL.Names[Idx]));
+    ChangeStatus('Searching... ' + PChar(DL.Names[Idx]));
     AddToLog('  ' + PChar(DL.Names[Idx]));
 
     AssignFile(FR, DirPath + DL.Names[Idx]);
     Reset(FR);
     while not Eof(FR) do
     begin
+      Application.ProcessMessages();
       ReadLn(FR, st);
       x := x + Length(st) + 2;
       //ProgressBar1.Progress := ProgressBar1.Progress + x;
@@ -209,8 +213,8 @@ begin
     //lbStatusText.Caption := 'Files *.dfm.unic not found';
     ChangeStatus('Files *.dfm.unic not found');
     AddToLog('');
-	AddToLog('Files *.dfm.unic not found');
-	AddToLog('');
+	  AddToLog('Files *.dfm.unic not found');
+	  AddToLog('');
 	
     DL.Free;
     Exit;
@@ -223,8 +227,10 @@ begin
 
   for Idx := 0 to DL.Count - 1 do
   begin
+    Application.ProcessMessages();
     //Form.StatusText[1] := PChar(DL.Names[Idx]);
     //lbStatusText.Caption := PChar(DL.Names[Idx]);
+    // ChangeStatus('Converting... ' + PChar(DL.Names[Idx]));
     ChangeStatus(PChar(DL.Names[Idx]));
     AddToLog('  ' + PChar(DL.Names[Idx]));
     st := DirPath + DL.Names[Idx];
@@ -236,6 +242,7 @@ begin
 
     while not Eof(FR) do
     begin
+      Application.ProcessMessages();
       ReadLn(FR, st);
       //ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
       ProgressBar1.Position := ProgressBar1.Position + Length(st) + 2;
