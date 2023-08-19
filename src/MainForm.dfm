@@ -263,6 +263,7 @@ object fromMain: TfromMain
     0000000100000001000000010000}
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -307,14 +308,6 @@ object fromMain: TfromMain
       Caption = 'lbMaxProgress'
       Visible = False
     end
-    object lbStatusText: TLabel
-      Left = 8
-      Top = 24
-      Width = 18
-      Height = 13
-      Caption = '123'
-      Visible = False
-    end
     object Label1: TLabel
       Left = 5
       Top = 6
@@ -355,7 +348,8 @@ object fromMain: TfromMain
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
-      Text = 'C:\Some directory'
+      Text = 'DirPath'
+      OnExit = edDirExit
     end
     object Button1: TButton
       Left = 569
@@ -385,7 +379,7 @@ object fromMain: TfromMain
       Anchors = [akTop, akRight]
       MaxLength = 3
       TabOrder = 4
-      Text = 'ext'
+      Text = 'Ext'
       OnExit = edExtExit
     end
   end

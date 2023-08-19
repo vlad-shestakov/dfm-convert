@@ -12,7 +12,6 @@ type
     edDir: TEdit;
     OpenDialog1: TOpenDialog;
     bGoClick: TButton;
-    lbStatusText: TLabel;
     lbProgressBar1: TLabel;
     lbMaxProgress: TLabel;
     ProgressBar1: TProgressBar;
@@ -29,17 +28,15 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure edExtExit(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure edDirExit(Sender: TObject);
   private
-    { Private declarations }      
-    DirPath: string;
-    Ext: string;
-    EXT_DEF: string;
+    { Private declarations }
+  public
+    { Public declarations }       
     procedure AddToLog(s: string);
     procedure ClearLog;
     procedure ChangeStatus(s: string);
-    procedure SetExtention(s: string);
-  public
-    { Public declarations }
   end;
 
 var
@@ -47,7 +44,7 @@ var
 
 implementation
 
-uses FormatUtils;
+uses FormatUtils, DfmConverting, AppParameters;
 
 {$R *.dfm}
 
@@ -70,22 +67,22 @@ begin
   if not DirectoryExists(edDir.Text) then
   begin
     MessageBox(0, PChar('Can''t open Dir' + #13#10 +
-      //OpenDirDialog1.Path), PChar(Form.Caption), MB_ICONSTOP);
-      edDir.Text), PChar(fromMain.Caption), MB_ICONSTOP);
+		  //OpenDirDialog1.Path), PChar(Form.Caption), MB_ICONSTOP);
+		  edDir.Text), PChar(fromMain.Caption), MB_ICONSTOP);
     Exit;
   end;
 
   //Form.StatusText[0] := '';
   //Form.StatusText[1] := '';
-  //lbStatusText.Caption := '';
   ChangeStatus('Selected catalog - ' + edDir.Text);
   AddToLog('Selected catalog - ' + edDir.Text);
   AddToLog('');
   //ProgressBar1.Progress := 0;
   ProgressBar1.Position := 0;
-  lbProgressBar1.Caption := '0';
+  //lbProgressBar1.Caption := '0';
   //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
-  DirPath := IncludeTrailingPathDelimiter(edDir.Text);
+  //DirPath := IncludeTrailingPathDelimiter(edDir.Text);
+  SetDirPath(edDir.Text);
   //lDir.Caption := DirPath; //MinimizeName(DirPath, lDir.Canvas.Handle, 256);
   // OpenDirDialog1.InitialPath := DirPath;
   // OpenDialog1.InitialDir := DirPath;
@@ -113,14 +110,13 @@ var
 	  Idx :Integer;
 	begin
 		//Form.StatusText[0] := pc;
-    //lbStatusText.Caption := pc;
     ChangeStatus(pc);
     AddToLog(pc);
 
     x := 0;
 	  //ProgressBar1.Progress := 0;
     ProgressBar1.Position := 0;
-	  lbProgressBar1.Caption := '0';
+	  //lbProgressBar1.Caption := '0';
 	  //ProgressBar1.MaxProgress := 0;   
     ProgressBar1.Max := 0;
 	  MaxProgress := 0;
@@ -145,10 +141,8 @@ begin
 
   if (DL.Count = 0) then
   begin
-    //Form.StatusText[0] := 'В каталоге нет dfm-файлов.';
-    //lbStatusText.Caption := 'В каталоге нет dfm-файлов.';
-    //lbStatusText.Caption := Ext + '-files not found.';
-    ChangeStatus('DFM-files not found.');
+    //Form.StatusText[0] := 'В каталоге нет dfm-�
+    ChangeStatus(Ext + '-files not found.');
     AddToLog('');
     AddToLog(Ext + '-files not found.');
     AddToLog('');
@@ -168,7 +162,6 @@ begin
     Application.ProcessMessages();
     Flag := FALSE;
     //Form.StatusText[1] := PChar(DL.Names[Idx]);
-    //lbStatusText.Caption := PChar(DL.Names[Idx]);
     ChangeStatus('Searching... ' + PChar(DL.Names[Idx]));
     AddToLog('  ' + PChar(DL.Names[Idx]));
 
@@ -181,7 +174,7 @@ begin
       x := x + Length(st) + 2;
       //ProgressBar1.Progress := ProgressBar1.Progress + x;
       ProgressBar1.Position := ProgressBar1.Position + x;
-      lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + x);
+      //lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + x);
       Flag := isStrUnic(st);
       if Flag then
       begin
@@ -190,7 +183,7 @@ begin
         //Размер файла минус считанные байты
         //ProgressBar1.Progress := ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
         ProgressBar1.Position := ProgressBar1.Position + (DLFileSize(DL, Idx) - x);
-        lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + (DLFileSize(DL, Idx) - x));
+        //lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + (DLFileSize(DL, Idx) - x));
         MoveFileEx(PChar(DirPath + DL.Names[Idx]),
           PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
         break; // Выход из чтения файла
@@ -204,8 +197,6 @@ begin
   if not UnFlag then
   begin
     //Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
-    //lbStatusText.Caption := 'Unicode в dfm-файлах отсутствует.';
-    //lbStatusText.Caption := 'DFM-files do not contain Unicode.';
     ChangeStatus(Ext + '-files do not contain Unicode.');
     AddToLog('');
     AddToLog('Done. ' + Ext + '-files do not contain Unicode.');
@@ -220,8 +211,6 @@ begin
   begin
     //Form.StatusText[0] := 'Не могу найти файлы *.dfm.unic...';
     //Form.StatusText[1] := 'ВНИМАНИЕ.';
-    //lbStatusText.Caption := 'Не могу найти файлы *.dfm.unic...';
-    //lbStatusText.Caption := 'Files *.dfm.unic not found';
     ChangeStatus('Files *.' + Ext + '.unic not found');
     AddToLog('');
 	  AddToLog('Files *.' + Ext + '.unic not found');
@@ -240,7 +229,6 @@ begin
   begin
     Application.ProcessMessages();
     //Form.StatusText[1] := PChar(DL.Names[Idx]);
-    //lbStatusText.Caption := PChar(DL.Names[Idx]);
     // ChangeStatus('Converting... ' + PChar(DL.Names[Idx]));
     ChangeStatus(PChar(DL.Names[Idx]));
     AddToLog('  ' + PChar(DL.Names[Idx]));
@@ -257,7 +245,7 @@ begin
       ReadLn(FR, st);
       //ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
       ProgressBar1.Position := ProgressBar1.Position + Length(st) + 2;
-      lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) +  Length(st) + 2);
+      //lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) +  Length(st) + 2);
       if isStrUnic(st) then
       begin
         //== Находим первый символ переводимой строки
@@ -281,9 +269,6 @@ begin
     CloseFile(FW);
   end;   // for
   DL.Free;
-  //Form.StatusText[0] := 'Готово.';
-  //lbStatusText.Caption := 'Готово.';
-  //lbStatusText.Caption := 'Done.';
   ChangeStatus('Done.');
   AddToLog('');
   AddToLog('Done.');
@@ -303,40 +288,46 @@ end;
 
 procedure TfromMain.ChangeStatus(s: string);
 begin
-  //lbStatusText.Caption := s;
   StatusBar1.Panels[0].Text := s;
 end;
-
-procedure TfromMain.SetExtention(s: string);
-begin
-  if s = '' then
-    s := EXT_DEF;
-
-  Ext := UpperCase(s);
-  edExt.Text := Ext;
-end;
-
 
 
 procedure TfromMain.FormShow(Sender: TObject);
 begin
-  //lbStatusText.Caption := '';
   ChangeStatus('');
-  SetExtention(EXT_DEF);
+  edExt.Text := Ext;
+  edDir.Text := DirPath;
 end;
 
 procedure TfromMain.FormCreate(Sender: TObject);
 begin
-  EXT_DEF := 'dfm';
-  edDir.Text := ExtractFilePath(Application.ExeName);
-  fromMain.Caption := 'DFM Converter';
-  // ExtractFilePath(ParamStr(0));
+  fromMain.Caption := APP_NAME;
 end;
 
 procedure TfromMain.edExtExit(Sender: TObject);
 begin
   SetExtention(edExt.Text);
 end;
+
+procedure TfromMain.edDirExit(Sender: TObject);
+begin
+  SetDirPath(edDir.Text);
+end;
+
+procedure TfromMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // if dlgProperties.ModalResult=mrOk then
+  // begin
+  // dbPath := deDBPath.Text;
+  // TelefCod1 := edTelefCod1.Text;
+  // TelefCod1Check := cbTelefCod1Check.Checked;
+  // TelefCod2 := edTelefCod2.Text;
+  // TelefCod2Check := cbTelefCod2Check.Checked;
+  // TimeCor := edTimeCor.Value;
+  SaveToINI;
+  // end;
+end;
+
 
 end.
 
