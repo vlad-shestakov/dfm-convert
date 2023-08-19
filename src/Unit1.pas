@@ -17,6 +17,7 @@ type
     lbMaxProgress: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure bGoClickClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }      
     DirPath: string;
@@ -38,7 +39,6 @@ uses FormatUtils;
 //====================
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  //ShowMessage('Привет');
   //if not OpenDirDialog1.Execute then
   {if not OpenDialog1.Execute then
   begin
@@ -52,7 +52,7 @@ begin
   //if not DirectoryExists(OpenDialog1.FileName) then
   if not DirectoryExists(Edit1.Text) then
   begin
-    MessageBox(0, PChar('Не могу открыть каталог' + #13 + #10 +
+    MessageBox(0, PChar('Can''t open Dir' + #13#10 +
       //OpenDirDialog1.Path), PChar(Form.Caption), MB_ICONSTOP);
       Edit1.Text), PChar(Form1.Caption), MB_ICONSTOP);
     Exit;
@@ -60,12 +60,14 @@ begin
 
   //Form.StatusText[0] := '';
   //Form.StatusText[1] := '';
+  lbStatusText.Caption := '';
   //ProgressBar1.Progress := 0;
+  lbProgressBar1.Caption := '0';
   //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
   DirPath := IncludeTrailingPathDelimiter(Edit1.Text);
   //lDir.Caption := DirPath; //MinimizeName(DirPath, lDir.Canvas.Handle, 256);
   // OpenDirDialog1.InitialPath := DirPath;
-  OpenDialog1.InitialDir := DirPath;
+  // OpenDialog1.InitialDir := DirPath;
 
 end;
 
@@ -93,15 +95,16 @@ var
     lbStatusText.Caption := pc;
 
     x := 0;
+	  //ProgressBar1.Progress := 0;
 	  lbProgressBar1.Caption := '0';
-		//ProgressBar1.Progress := 0;
-
 	  //ProgressBar1.MaxProgress := 0;
 	  MaxProgress := 0;
 
     for Idx := 0 to DL.Count - 1 do
+	begin
 		  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
       MaxProgress := MaxProgress + DLFileSize(DL, Idx);
+	end;
 
     lbMaxProgress.Caption := IntToStr(MaxProgress);
 	end;
@@ -117,12 +120,14 @@ begin
   if (DL.Count = 0) then
   begin
     //Form.StatusText[0] := 'В каталоге нет dfm-файлов.';
-    lbStatusText.Caption := 'В каталоге нет dfm-файлов.';
+    //lbStatusText.Caption := 'В каталоге нет dfm-файлов.';
+    lbStatusText.Caption := 'DFM-files not found.';
     DL.Free;
     Exit; // Выход, если dfm в каталоге нет.
   end;
 
-  InitSBMsg('Идет поиск...');
+  //InitSBMsg('Идет поиск...');
+  InitSBMsg('Searching...');
 
 
   //== Анализ файлов ==//
@@ -140,13 +145,14 @@ begin
       ReadLn(FR, st);
       x := x + Length(st) + 2;
       //ProgressBar1.Progress := ProgressBar1.Progress + x;
+	  lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + x);
       Flag := isStrUnic(st);
       if Flag then
       begin
         CloseFile(FR);
         UnFlag := TRUE;
         //ProgressBar1.Progress := // Размер файла минус считанные байты
-        //  ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
+        //ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
         lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + (DLFileSize(DL, Idx) - x));
         MoveFileEx(PChar(DirPath + DL.Names[Idx]),
           PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
@@ -161,7 +167,8 @@ begin
   if not UnFlag then
   begin
     //Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
-    lbStatusText.Caption := 'Unicode в dfm-файлах отсутствует.';
+    //lbStatusText.Caption := 'Unicode в dfm-файлах отсутствует.';
+    lbStatusText.Caption := 'DFM-files do not contain Unicode.';
     DL.Free;
     Exit;
   end;
@@ -172,12 +179,14 @@ begin
   begin
     //Form.StatusText[0] := 'Не могу найти файлы *.dfm.unic...';
     //Form.StatusText[1] := 'ВНИМАНИЕ.';
-    lbStatusText.Caption := 'Не могу найти файлы *.dfm.unic...';
+    //lbStatusText.Caption := 'Не могу найти файлы *.dfm.unic...';
+    lbStatusText.Caption := 'Files *.dfm.unic not found';
     DL.Free;
     Exit;
   end;
 
-  InitSBMsg('Идет замена...');
+  //InitSBMsg('Идет замена...');
+  InitSBMsg('Converting...');
 
   //== Замена Unicode в Ansi в *.dfm_unic-файлах ==//
 
@@ -196,6 +205,7 @@ begin
     begin
       ReadLn(FR, st);
       //ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
+	  lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) +  Length(st) + 2);
       if isStrUnic(st) then
       begin
         //== Находим первый символ переводимой строки
@@ -220,8 +230,14 @@ begin
   end;   // for
   DL.Free;
   //Form.StatusText[0] := 'Готово.';
-  lbStatusText.Caption := 'Готово.';
+  //lbStatusText.Caption := 'Готово.';
+  lbStatusText.Caption := 'Done.';
 
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  lbStatusText.Caption := '';
 end;
 
 end.
