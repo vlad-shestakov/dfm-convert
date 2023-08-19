@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 192
   Top = 125
-  Width = 377
-  Height = 140
+  Width = 555
+  Height = 300
   Caption = 'Project 2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -55,11 +55,26 @@ object Form1: TForm1
   object bGoClick: TButton
     Left = 248
     Top = 40
-    Width = 97
+    Width = 113
     Height = 25
     Caption = 'Convert DFMs'
     TabOrder = 2
     OnClick = bGoClickClick
+  end
+  object ProgressBar1: TProgressBar
+    Left = 184
+    Top = 8
+    Width = 150
+    Height = 17
+    TabOrder = 3
+  end
+  object mmLog: TMemo
+    Left = 16
+    Top = 96
+    Width = 497
+    Height = 153
+    ScrollBars = ssVertical
+    TabOrder = 4
   end
   object OpenDialog1: TOpenDialog
     Left = 304

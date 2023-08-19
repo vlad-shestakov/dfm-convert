@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, KOL;
+  Dialogs, StdCtrls, KOL, ComCtrls;
 
 type
   TForm1 = class(TForm)
@@ -15,12 +15,17 @@ type
     lbStatusText: TLabel;
     lbProgressBar1: TLabel;
     lbMaxProgress: TLabel;
+    ProgressBar1: TProgressBar;
+    mmLog: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure bGoClickClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }      
     DirPath: string;
+    procedure AddToLog(Str :String);
+    procedure ClearLog;
+    procedure ChangeStatus(Str: String);
   public
     { Public declarations }
   end;
@@ -60,8 +65,12 @@ begin
 
   //Form.StatusText[0] := '';
   //Form.StatusText[1] := '';
-  lbStatusText.Caption := '';
+  //lbStatusText.Caption := '';
+  ChangeStatus('Выбран каталог - ' + Edit1.Text);
+  AddToLog('Выбран каталог - ' + Edit1.Text);
+  AddToLog('');
   //ProgressBar1.Progress := 0;
+  ProgressBar1.Position := 0;
   lbProgressBar1.Caption := '0';
   //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
   DirPath := IncludeTrailingPathDelimiter(Edit1.Text);
@@ -92,19 +101,24 @@ var
 	  Idx :Integer;
 	begin
 		//Form.StatusText[0] := pc;
-    lbStatusText.Caption := pc;
+    //lbStatusText.Caption := pc;
+    ChangeStatus(pc);
+    AddToLog(pc);
 
     x := 0;
 	  //ProgressBar1.Progress := 0;
+    ProgressBar1.Position := 0;
 	  lbProgressBar1.Caption := '0';
-	  //ProgressBar1.MaxProgress := 0;
+	  //ProgressBar1.MaxProgress := 0;   
+    ProgressBar1.Max := 0;
 	  MaxProgress := 0;
 
     for Idx := 0 to DL.Count - 1 do
-	begin
+   	begin
 		  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
+		  ProgressBar1.Max := ProgressBar1.Max + DLFileSize(DL, Idx);
       MaxProgress := MaxProgress + DLFileSize(DL, Idx);
-	end;
+	  end;
 
     lbMaxProgress.Caption := IntToStr(MaxProgress);
 	end;
@@ -112,16 +126,19 @@ var
 
 begin
 
-    //ShowMessage('Привет');
-
   DL := NewDirListEx(DirPath, DFM, 0);
   DL.Sort([sdrByExt]);
+  ClearLog;
 
   if (DL.Count = 0) then
   begin
     //Form.StatusText[0] := 'В каталоге нет dfm-файлов.';
     //lbStatusText.Caption := 'В каталоге нет dfm-файлов.';
-    lbStatusText.Caption := 'DFM-files not found.';
+    //lbStatusText.Caption := 'DFM-files not found.';
+    ChangeStatus('DFM-files not found.');
+    AddToLog('');
+    AddToLog('DFM-files not found.');
+    AddToLog('');
     DL.Free;
     Exit; // Выход, если dfm в каталоге нет.
   end;
@@ -137,7 +154,10 @@ begin
   begin
     Flag := FALSE;
     //Form.StatusText[1] := PChar(DL.Names[Idx]);
-    lbStatusText.Caption := PChar(DL.Names[Idx]);
+    //lbStatusText.Caption := PChar(DL.Names[Idx]);
+    ChangeStatus(PChar(DL.Names[Idx]));
+    AddToLog('  ' + PChar(DL.Names[Idx]));
+
     AssignFile(FR, DirPath + DL.Names[Idx]);
     Reset(FR);
     while not Eof(FR) do
@@ -145,14 +165,16 @@ begin
       ReadLn(FR, st);
       x := x + Length(st) + 2;
       //ProgressBar1.Progress := ProgressBar1.Progress + x;
-	  lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + x);
+      ProgressBar1.Position := ProgressBar1.Position + x;
+      lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + x);
       Flag := isStrUnic(st);
       if Flag then
       begin
         CloseFile(FR);
         UnFlag := TRUE;
-        //ProgressBar1.Progress := // Размер файла минус считанные байты
-        //ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
+        //Размер файла минус считанные байты
+        //ProgressBar1.Progress := ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
+        ProgressBar1.Position := ProgressBar1.Position + (DLFileSize(DL, Idx) - x);
         lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + (DLFileSize(DL, Idx) - x));
         MoveFileEx(PChar(DirPath + DL.Names[Idx]),
           PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
@@ -168,7 +190,11 @@ begin
   begin
     //Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
     //lbStatusText.Caption := 'Unicode в dfm-файлах отсутствует.';
-    lbStatusText.Caption := 'DFM-files do not contain Unicode.';
+    //lbStatusText.Caption := 'DFM-files do not contain Unicode.';
+    ChangeStatus('DFM-files do not contain Unicode.');
+    AddToLog('');
+    AddToLog('DFM-files do not contain Unicode.');
+    AddToLog('');
     DL.Free;
     Exit;
   end;
@@ -180,7 +206,12 @@ begin
     //Form.StatusText[0] := 'Не могу найти файлы *.dfm.unic...';
     //Form.StatusText[1] := 'ВНИМАНИЕ.';
     //lbStatusText.Caption := 'Не могу найти файлы *.dfm.unic...';
-    lbStatusText.Caption := 'Files *.dfm.unic not found';
+    //lbStatusText.Caption := 'Files *.dfm.unic not found';
+    ChangeStatus('Files *.dfm.unic not found');
+    AddToLog('');
+	AddToLog('Files *.dfm.unic not found');
+	AddToLog('');
+	
     DL.Free;
     Exit;
   end;
@@ -193,7 +224,9 @@ begin
   for Idx := 0 to DL.Count - 1 do
   begin
     //Form.StatusText[1] := PChar(DL.Names[Idx]);
-    lbStatusText.Caption := PChar(DL.Names[Idx]);
+    //lbStatusText.Caption := PChar(DL.Names[Idx]);
+    ChangeStatus(PChar(DL.Names[Idx]));
+    AddToLog('  ' + PChar(DL.Names[Idx]));
     st := DirPath + DL.Names[Idx];
     AssignFile(FR, st);
     Reset(FR); // Чтение
@@ -205,7 +238,8 @@ begin
     begin
       ReadLn(FR, st);
       //ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
-	  lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) +  Length(st) + 2);
+      ProgressBar1.Position := ProgressBar1.Position + Length(st) + 2;
+      lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) +  Length(st) + 2);
       if isStrUnic(st) then
       begin
         //== Находим первый символ переводимой строки
@@ -231,13 +265,32 @@ begin
   DL.Free;
   //Form.StatusText[0] := 'Готово.';
   //lbStatusText.Caption := 'Готово.';
-  lbStatusText.Caption := 'Done.';
+  //lbStatusText.Caption := 'Done.';
+  ChangeStatus('Done.');
+  AddToLog('');
+  AddToLog('Done.');
+  AddToLog('');
 
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   lbStatusText.Caption := '';
+end;
+
+procedure TForm1.AddToLog(Str :String);
+begin
+  mmLog.Lines.Add(Str);
+end;
+
+procedure TForm1.ClearLog;
+begin
+  mmLog.Lines.Clear;
+end;
+
+procedure TForm1.ChangeStatus(Str: String);
+begin
+  lbStatusText.Caption := Str;
 end;
 
 end.
