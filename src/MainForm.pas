@@ -12,8 +12,6 @@ type
     edDir: TEdit;
     OpenDialog1: TOpenDialog;
     bGoClick: TButton;
-    lbProgressBar1: TLabel;
-    lbMaxProgress: TLabel;
     ProgressBar1: TProgressBar;
     mmLog: TMemo;
     pnTop: TPanel;
@@ -79,7 +77,6 @@ begin
   AddToLog('');
   //ProgressBar1.Progress := 0;
   ProgressBar1.Position := 0;
-  //lbProgressBar1.Caption := '0';
   //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
   //DirPath := IncludeTrailingPathDelimiter(edDir.Text);
   SetDirPath(edDir.Text);
@@ -99,7 +96,7 @@ var
   DFM: string;
   DL: PDirList;
   Flag, UnFlag: Boolean; // Есть Unicode строка
-  Idx, x, MaxProgress: Integer;
+  Idx, x: Integer;
   st : string;
   //FR, FW: Text;
   FR, FW: TextFile;
@@ -110,25 +107,19 @@ var
 	  Idx :Integer;
 	begin
 		//Form.StatusText[0] := pc;
-    ChangeStatus(pc);
-    AddToLog(pc);
+		ChangeStatus(pc);
+		AddToLog(pc);
 
-    x := 0;
-	  //ProgressBar1.Progress := 0;
-    ProgressBar1.Position := 0;
-	  //lbProgressBar1.Caption := '0';
-	  //ProgressBar1.MaxProgress := 0;   
-    ProgressBar1.Max := 0;
-	  MaxProgress := 0;
+		x := 0;
+		  //ProgressBar1.Progress := 0;
+		ProgressBar1.Position := 0;
+		ProgressBar1.Max := 0;
 
-    for Idx := 0 to DL.Count - 1 do
-   	begin
-		  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
-		  ProgressBar1.Max := ProgressBar1.Max + DLFileSize(DL, Idx);
-      MaxProgress := MaxProgress + DLFileSize(DL, Idx);
-	  end;
-
-    lbMaxProgress.Caption := IntToStr(MaxProgress);
+		for Idx := 0 to DL.Count - 1 do
+		begin
+			  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
+			  ProgressBar1.Max := ProgressBar1.Max + DLFileSize(DL, Idx);
+		end;
 	end;
 	//=============================
 
@@ -174,7 +165,6 @@ begin
       x := x + Length(st) + 2;
       //ProgressBar1.Progress := ProgressBar1.Progress + x;
       ProgressBar1.Position := ProgressBar1.Position + x;
-      //lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + x);
       Flag := isStrUnic(st);
       if Flag then
       begin
@@ -183,7 +173,6 @@ begin
         //Размер файла минус считанные байты
         //ProgressBar1.Progress := ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
         ProgressBar1.Position := ProgressBar1.Position + (DLFileSize(DL, Idx) - x);
-        //lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) + (DLFileSize(DL, Idx) - x));
         MoveFileEx(PChar(DirPath + DL.Names[Idx]),
           PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
         break; // Выход из чтения файла
@@ -243,9 +232,7 @@ begin
     begin
       Application.ProcessMessages();
       ReadLn(FR, st);
-      //ProgressBar1.Progress := ProgressBar1.Progress + Length(st) + 2;
       ProgressBar1.Position := ProgressBar1.Position + Length(st) + 2;
-      //lbProgressBar1.Caption := IntToStr(StrToInt(lbProgressBar1.Caption) +  Length(st) + 2);
       if isStrUnic(st) then
       begin
         //== Находим первый символ переводимой строки
@@ -307,11 +294,13 @@ end;
 procedure TfromMain.edExtExit(Sender: TObject);
 begin
   SetExtention(edExt.Text);
+  edExt.Text := Ext;
 end;
 
 procedure TfromMain.edDirExit(Sender: TObject);
 begin
   SetDirPath(edDir.Text);
+  edDir.Text := DirPath;
 end;
 
 procedure TfromMain.FormClose(Sender: TObject; var Action: TCloseAction);

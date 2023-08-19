@@ -292,22 +292,6 @@ object fromMain: TfromMain
     DesignSize = (
       669
       65)
-    object lbProgressBar1: TLabel
-      Left = 72
-      Top = 24
-      Width = 6
-      Height = 13
-      Caption = '0'
-      Visible = False
-    end
-    object lbMaxProgress: TLabel
-      Left = 144
-      Top = 24
-      Width = 69
-      Height = 13
-      Caption = 'lbMaxProgress'
-      Visible = False
-    end
     object Label1: TLabel
       Left = 5
       Top = 6
@@ -344,7 +328,7 @@ object fromMain: TfromMain
     object edDir: TEdit
       Left = 32
       Top = 2
-      Width = 530
+      Width = 465
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
