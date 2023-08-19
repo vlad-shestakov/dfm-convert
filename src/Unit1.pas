@@ -12,6 +12,9 @@ type
     Edit1: TEdit;
     OpenDialog1: TOpenDialog;
     bGoClick: TButton;
+    lbStatusText: TLabel;
+    lbProgressBar1: TLabel;
+    lbMaxProgress: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure bGoClickClick(Sender: TObject);
   private
@@ -74,7 +77,7 @@ const
 var
   DL: PDirList;
   Flag, UnFlag: Boolean; // Есть Unicode строка
-  Idx, x: Integer;
+  Idx, x, MaxProgress: Integer;
   st : string;
   //FR, FW: Text;
   FR, FW: TextFile;
@@ -84,34 +87,41 @@ var
 	var
 	  Idx :Integer;
 	begin
-		ShowMessage('Привет');
-		{
-	  Form.StatusText[0] := pc;
-	  x := 0;
-	  ProgressBar1.Progress := 0;
-	  ProgressBar1.MaxProgress := 0;
-	  for Idx := 0 to DL.Count - 1 do
-		ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
-		}
+		//Form.StatusText[0] := pc;
+    lbStatusText.Caption := pc;
+
+    x := 0;
+	  lbProgressBar1.Caption := '0';
+		//ProgressBar1.Progress := 0;
+
+	  //ProgressBar1.MaxProgress := 0;
+	  MaxProgress := 0;
+
+    for Idx := 0 to DL.Count - 1 do
+		  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
+      MaxProgress := MaxProgress + 1; //DLFileSize(DL, Idx);
+
+    lbMaxProgress.Caption := IntToStr(MaxProgress);
 	end;
 	//=============================
 
 begin
-           
-    ShowMessage('Привет');
-	{
+
+    //ShowMessage('Привет');
 
   DL := NewDirListEx(DirPath, DFM, 0);
   DL.Sort([sdrByExt]);
 
   if (DL.Count = 0) then
   begin
-    Form.StatusText[0] := 'В каталоге нет dfm-файлов.';
+    //Form.StatusText[0] := 'В каталоге нет dfm-файлов.';
+    lbStatusText.Caption := 'В каталоге нет dfm-файлов.';
     DL.Free;
     Exit; // Выход, если dfm в каталоге нет.
   end;
 
   InitSBMsg('Идет поиск...');
+
 
   //== Анализ файлов ==//
 
@@ -119,23 +129,24 @@ begin
   for Idx := 0 to DL.Count - 1 do
   begin
     Flag := FALSE;
-    Form.StatusText[1] := PChar(DL.Names[Idx]);
+    //Form.StatusText[1] := PChar(DL.Names[Idx]);
+    lbStatusText.Caption := PChar(DL.Names[Idx]);
     AssignFile(FR, DirPath + DL.Names[Idx]);
     Reset(FR);
     while not Eof(FR) do
     begin
       ReadLn(FR, st);
       x := x + Length(st) + 2;
-      ProgressBar1.Progress := ProgressBar1.Progress + x;
+      //ProgressBar1.Progress := ProgressBar1.Progress + x;
       Flag := isStrUnic(st);
       if Flag then
       begin
         CloseFile(FR);
         UnFlag := TRUE;
-        ProgressBar1.Progress := // Размер файла минус считанные байты
-          ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
-        MoveFileEx(PChar(DirPath + DL.Names[Idx]),
-          PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
+        //ProgressBar1.Progress := // Размер файла минус считанные байты
+        //  ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
+        //MoveFileEx(PChar(DirPath + DL.Names[Idx]),
+        //  PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
         break; // Выход из чтения файла
       end;
     end; // while
@@ -144,6 +155,7 @@ begin
       CloseFile(FR);
   end; // for
 
+  {
   if not UnFlag then
   begin
     Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';

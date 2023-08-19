@@ -47,6 +47,34 @@ begin
 end;
 
 
+//=============================
+//== ПОИСК UNICODE В СТРОКЕ  ==
+//=============================
+function isStrUnic(Str: string): Boolean;
+var
+  x: Integer;
+begin
+  Result := FALSE;
+  if (Length(Str) < 5) or (Pos('#', Str) = 0) then
+    Exit;
+
+  if Pos('#39', Str) <> 0 then
+  begin
+    Result := TRUE;
+    Exit;
+  end;
+
+  for x := Pos('#', Str) to Length(Str) - 4 do
+    if (x + 4) <= Length(Str) then
+      if (Str[x + 1] in ['0'..'9']) and (Str[x + 2] in ['0'..'9']) and
+         (Str[x + 3] in ['0'..'9']) and (Str[x + 4] in ['0'..'9']) then
+      begin
+        Result := TRUE;
+        Break;
+      end;
+end;
+
+
 //===========================
 //== РАЗМЕР ФАЙЛА В БАЙТАХ ==
 //===========================

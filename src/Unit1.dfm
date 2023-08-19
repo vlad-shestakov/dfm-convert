@@ -13,6 +13,27 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object lbStatusText: TLabel
+    Left = 56
+    Top = 48
+    Width = 59
+    Height = 13
+    Caption = 'lbStatusText'
+  end
+  object lbProgressBar1: TLabel
+    Left = 56
+    Top = 72
+    Width = 6
+    Height = 13
+    Caption = '1'
+  end
+  object lbMaxProgress: TLabel
+    Left = 128
+    Top = 72
+    Width = 69
+    Height = 13
+    Caption = 'lbMaxProgress'
+  end
   object Button1: TButton
     Left = 200
     Top = 96
