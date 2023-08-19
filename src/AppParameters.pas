@@ -3,22 +3,23 @@ unit AppParameters;
 interface
 
 const
-  APP_NAME 				= 'DFM Converter'; {Заголовок программы}
-  APP_VERSION			= '1.0.0';  {версия программы}
+  APP_NAME          = 'DFM Converter';		// Заголовок программы
+
   iniFileName 			= 'dfmconvert.ini';
   iniSectionName 		= 'MAIN';
   
-  EXT_DEF				= 'dfm';
+  EXT_DEF               = 'dfm';
+  UNIC_EXT              = '.unic';
   IS_SAVE_DIR_PATH_DEF	= false;
-  DIR_PATH_DEF			= '';
+  DIR_PATH_DEF          = '';
   
 var
   ProgramDir: 		string; 	// Рабочий каталог программы}
-  
-  Ext: 				string = EXT_DEF;
-  IsSaveDirPath: 	boolean = IS_SAVE_DIR_PATH_DEF;
-  DirPath: 			string = DIR_PATH_DEF;
 
+  Ext:            string = EXT_DEF;					// Рабочее расширение
+  IsSaveDirPath:  boolean = IS_SAVE_DIR_PATH_DEF;	// Флаг сохранять ли директорию
+  DirPath:        string = DIR_PATH_DEF;			// Рабочая директория
+  
 procedure SaveToINI;
 // Сохраняет настройки программы в ини файл
 
@@ -48,9 +49,7 @@ procedure LoadFromINI;
 		    Ini.Destroy;
 	    end;
 	  except
-		//on E: Exception do     
-		  LogError('Error loading INI file');
-      //ShowMessage('Error loading INI file ('ProgramDir + '\' + iniFileName') - ' + E.Message');
+	    LogError('Error loading INI file');
 	  end;
 
 
@@ -74,9 +73,9 @@ procedure SaveToINI;
 		    Ini.Destroy;
 	    end;
 	  except
-		//on E: Exception do
-		  LogError('');
-      //ShowMessage('Error saving INI file ('ProgramDir + '\' + iniFileName') - ' + E.Message');
+		// on E: Exception do
+        // ShowMessage('Error saving INI file ('ProgramDir + '\' + iniFileName') - ' + E.Message'); //todo
+	    LogError('Error saving INI file');
 	  end;
   end;
 
@@ -90,7 +89,6 @@ procedure SetExtention(s: string);
 begin
   if s = '' then
     s := EXT_DEF;
-
   Ext := UpperCase(s);
 end;
 
@@ -98,26 +96,19 @@ procedure SetDirPath(s: string);
 begin       
   if s = '' then
     s := ProgramDir;
-	  // s := ExtractFilePath(ProgramDir);
-    //s := SetDirPath(ExtractFilePath(ParamStr(0))));
+	// s := ExtractFilePath(ProgramDir); -- Резал крайнюю папку
   DirPath := IncludeTrailingPathDelimiter(s);
 end;
 
 
 procedure LogError(s: string);
 begin
-  s := s;
-  //ShowMessage(s);
+  s := s; // stub
+  //todo
 end;
 
 begin
   // инициализация модуля
   GetDir(0,ProgramDir);
-
   LoadFromINI;
-  //FileNamesList := TStringList.Create;
-  //ErrorLog := TStringList.Create;
-  //ErrorLog.Sorted := True;
-  //ErrorLog.Duplicates := dupIgnore;
-
 end.

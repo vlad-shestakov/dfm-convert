@@ -8,7 +8,6 @@ uses
 
 type
   TfromMain = class(TForm)
-    Button1: TButton;
     edDir: TEdit;
     OpenDialog1: TOpenDialog;
     bGoClick: TButton;
@@ -21,7 +20,6 @@ type
     Label2: TLabel;
     edExt: TEdit;
     Label3: TLabel;
-    procedure Button1Click(Sender: TObject);
     procedure bGoClickClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -42,63 +40,20 @@ var
 
 implementation
 
-uses FormatUtils, DfmConverting, AppParameters;
+uses DfmConverting, AppParameters;
 
 {$R *.dfm}
-
-//====================
-//== ВЫБОР КАТАЛОГА ==
-//====================
-procedure TfromMain.Button1Click(Sender: TObject);
-begin
-  //if not OpenDirDialog1.Execute then
-  {if not OpenDialog1.Execute then
-  begin
-    Exit;
-    //ShowMessage('Привет');
-  end;
-  {}
-
-  //ShowMessage(OpenDialog1.FileName);
-  //if not DirectoryExists(OpenDirDialog1.Path) then
-  //if not DirectoryExists(OpenDialog1.FileName) then
-  if not DirectoryExists(edDir.Text) then
-  begin
-    MessageBox(0, PChar('Can''t open Dir' + #13#10 +
-		  //OpenDirDialog1.Path), PChar(Form.Caption), MB_ICONSTOP);
-		  edDir.Text), PChar(fromMain.Caption), MB_ICONSTOP);
-    Exit;
-  end;
-
-  //Form.StatusText[0] := '';
-  //Form.StatusText[1] := '';
-  ChangeStatus('Selected catalog - ' + edDir.Text);
-  AddToLog('Selected catalog - ' + edDir.Text);
-  AddToLog('');
-  //ProgressBar1.Progress := 0;
-  ProgressBar1.Position := 0;
-  //DirPath := IncludeTrailingPathDelimiter(OpenDirDialog1.Path);
-  //DirPath := IncludeTrailingPathDelimiter(edDir.Text);
-  SetDirPath(edDir.Text);
-  //lDir.Caption := DirPath; //MinimizeName(DirPath, lDir.Canvas.Handle, 256);
-  // OpenDirDialog1.InitialPath := DirPath;
-  // OpenDialog1.InitialDir := DirPath;
-
-end;
 
 //===================================
 //== ПЕРЕВОД DFM ИЗ UNICODE В ANSI ==
 //===================================
 procedure TfromMain.bGoClickClick(Sender: TObject);
-const
-  UNIC = '.unic';
 var
   DFM: string;
   DL: PDirList;
   Flag, UnFlag: Boolean; // Есть Unicode строка
   Idx, x: Integer;
   st : string;
-  //FR, FW: Text;
   FR, FW: TextFile;
   
 	//=============================
@@ -106,20 +61,15 @@ var
 	var
 	  Idx :Integer;
 	begin
-		//Form.StatusText[0] := pc;
 		ChangeStatus(pc);
 		AddToLog(pc);
 
 		x := 0;
-		  //ProgressBar1.Progress := 0;
 		ProgressBar1.Position := 0;
 		ProgressBar1.Max := 0;
 
 		for Idx := 0 to DL.Count - 1 do
-		begin
-			  //ProgressBar1.MaxProgress := ProgressBar1.MaxProgress + DLFileSize(DL, Idx);
-			  ProgressBar1.Max := ProgressBar1.Max + DLFileSize(DL, Idx);
-		end;
+			ProgressBar1.Max := ProgressBar1.Max + DLFileSize(DL, Idx);
 	end;
 	//=============================
 
@@ -127,12 +77,15 @@ begin
   DFM := '*.' + Ext;   // *.dfm
   DL := NewDirListEx(DirPath, DFM, 0);
   DL.Sort([sdrByExt]);
+  
   ClearLog;          
-  AddToLog('DFM - ' + DFM);
+  ChangeStatus('Selected catalog - ' + edDir.Text);
+  AddToLog('Selected catalog - ' + edDir.Text);
+  AddToLog('File extention - ' + DFM);
+  AddToLog('');
 
   if (DL.Count = 0) then
   begin
-    //Form.StatusText[0] := 'В каталоге нет dfm-�
     ChangeStatus(Ext + '-files not found.');
     AddToLog('');
     AddToLog(Ext + '-files not found.');
@@ -141,9 +94,7 @@ begin
     Exit; // Выход, если dfm в каталоге нет.
   end;
 
-  //InitSBMsg('Идет поиск...');
   InitSBMsg('Searching...');
-
 
   //== Анализ файлов ==//
 
@@ -152,7 +103,6 @@ begin
   begin
     Application.ProcessMessages();
     Flag := FALSE;
-    //Form.StatusText[1] := PChar(DL.Names[Idx]);
     ChangeStatus('Searching... ' + PChar(DL.Names[Idx]));
     AddToLog('  ' + PChar(DL.Names[Idx]));
 
@@ -163,7 +113,6 @@ begin
       Application.ProcessMessages();
       ReadLn(FR, st);
       x := x + Length(st) + 2;
-      //ProgressBar1.Progress := ProgressBar1.Progress + x;
       ProgressBar1.Position := ProgressBar1.Position + x;
       Flag := isStrUnic(st);
       if Flag then
@@ -171,10 +120,9 @@ begin
         CloseFile(FR);
         UnFlag := TRUE;
         //Размер файла минус считанные байты
-        //ProgressBar1.Progress := ProgressBar1.Progress + (DLFileSize(DL, Idx) - x);
         ProgressBar1.Position := ProgressBar1.Position + (DLFileSize(DL, Idx) - x);
         MoveFileEx(PChar(DirPath + DL.Names[Idx]),
-          PChar(DirPath + DL.Names[Idx] + UNIC), MOVEFILE_REPLACE_EXISTING);
+          PChar(DirPath + DL.Names[Idx] + UNIC_EXT), MOVEFILE_REPLACE_EXISTING);
         break; // Выход из чтения файла
       end;
     end; // while
@@ -185,7 +133,6 @@ begin
 
   if not UnFlag then
   begin
-    //Form.StatusText[0] := 'Unicode в dfm-файлах отсутствует.';
     ChangeStatus(Ext + '-files do not contain Unicode.');
     AddToLog('');
     AddToLog('Done. ' + Ext + '-files do not contain Unicode.');
@@ -194,12 +141,10 @@ begin
     Exit;
   end;
 
-  DL.ScanDirectory(DirPath, DFM + UNIC, 0);
+  DL.ScanDirectory(DirPath, DFM + UNIC_EXT, 0);
 
   if DL.Count = 0 then
   begin
-    //Form.StatusText[0] := 'Не могу найти файлы *.dfm.unic...';
-    //Form.StatusText[1] := 'ВНИМАНИЕ.';
     ChangeStatus('Files *.' + Ext + '.unic not found');
     AddToLog('');
 	  AddToLog('Files *.' + Ext + '.unic not found');
@@ -209,7 +154,7 @@ begin
     Exit;
   end;
 
-  //InitSBMsg('Идет замена...');
+
   InitSBMsg('Converting...');
 
   //== Замена Unicode в Ansi в *.dfm_unic-файлах ==//
@@ -217,8 +162,6 @@ begin
   for Idx := 0 to DL.Count - 1 do
   begin
     Application.ProcessMessages();
-    //Form.StatusText[1] := PChar(DL.Names[Idx]);
-    // ChangeStatus('Converting... ' + PChar(DL.Names[Idx]));
     ChangeStatus(PChar(DL.Names[Idx]));
     AddToLog('  ' + PChar(DL.Names[Idx]));
     st := DirPath + DL.Names[Idx];
@@ -305,16 +248,7 @@ end;
 
 procedure TfromMain.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  // if dlgProperties.ModalResult=mrOk then
-  // begin
-  // dbPath := deDBPath.Text;
-  // TelefCod1 := edTelefCod1.Text;
-  // TelefCod1Check := cbTelefCod1Check.Checked;
-  // TelefCod2 := edTelefCod2.Text;
-  // TelefCod2Check := cbTelefCod2Check.Checked;
-  // TimeCor := edTimeCor.Value;
   SaveToINI;
-  // end;
 end;
 
 

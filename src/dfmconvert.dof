@@ -91,9 +91,9 @@ ImageBase=4194304
 ExeDescription=
 [Directories]
 OutputDir=..\bin
-UnitOutputDir=..\dcu
-PackageDLLOutputDir=..\bpl
-PackageDCPOutputDir=..\dcp
+UnitOutputDir=
+PackageDLLOutputDir=
+PackageDCPOutputDir=
 SearchPath=
 Packages=vcl;rtl;vclactnband;vclx;dbrtl;vcldb;designide
 Conditionals=

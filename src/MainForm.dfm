@@ -310,7 +310,7 @@ object fromMain: TfromMain
     end
     object Label3: TLabel
       Left = 503
-      Top = 38
+      Top = 6
       Width = 18
       Height = 13
       Alignment = taRightJustify
@@ -320,7 +320,7 @@ object fromMain: TfromMain
     object ProgressBar1: TProgressBar
       Left = 56
       Top = 36
-      Width = 442
+      Width = 609
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
@@ -335,34 +335,24 @@ object fromMain: TfromMain
       Text = 'DirPath'
       OnExit = edDirExit
     end
-    object Button1: TButton
-      Left = 569
-      Top = 0
-      Width = 99
-      Height = 25
-      Anchors = [akTop, akRight]
-      Caption = 'Select Dir'
-      TabOrder = 2
-      OnClick = Button1Click
-    end
     object bGoClick: TButton
       Left = 569
-      Top = 32
+      Top = 0
       Width = 97
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Convert DFMs'
-      TabOrder = 3
+      TabOrder = 2
       OnClick = bGoClickClick
     end
     object edExt: TEdit
       Left = 530
-      Top = 34
+      Top = 2
       Width = 32
       Height = 21
       Anchors = [akTop, akRight]
       MaxLength = 3
-      TabOrder = 4
+      TabOrder = 3
       Text = 'Ext'
       OnExit = edExtExit
     end
