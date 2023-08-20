@@ -1,5 +1,4 @@
 /_old/*
-/bin/*.exe
 /bin/test*
 /test/*
 /res/components/*

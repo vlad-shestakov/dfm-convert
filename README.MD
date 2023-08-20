@@ -64,17 +64,16 @@ Caption = 'Поля помеченные
 
 
 **Структура проекта:**
-* **/bin/dfmconvert.exe** - программа DFM-файл конвертер
-* **/bin/dfmconvert.ini** - настройки
-* **/bin/convert.exe** - Delphi Form Coversion Utility 7.0 (Преобразование DFM в байт-код и обратно из поставки Delphi 7.0)
-* **/bin/__backup-dfm.bat** - Резервное копирование DFM и FRM файлов в подпапку /res
-* **/bin/__delete-dfm.bat** - Удаление DFM и FRM файлов в папке
-* **/bin/__restore-dfm.bat** - Восстановление DFM и FRM файлов из подпапки /res
-* **/src/* ** - исходный код */src*
-
-
-***Тестирование:***
-* Через сценарии Postman - *carparking.postman_collection.json*
+```
+/bin/__backup-dfm.bat  - Скрипт. Резервное копирование DFM и FRM файлов в подпапку /res
+/bin/__delete-dfm.bat  - Скрипт. Удаление DFM и FRM файлов в папке
+/bin/__restore-dfm.bat - Скрипт. Восстановление DFM и FRM файлов из подпапки /res
+/bin/dfmconvert.exe    - программа DFM-файл конвертер
+/bin/dfmconvert.ini    - настройки
+/bin/example.dfm       - пример DFM-формы
+/bin/convert.exe       - Delphi Form Coversion Utility 7.0 (Преобразование DFM в байт-код и обратно из поставки Delphi 7.0)
+/src/                  - исходный код */src*
+```
 
 
 **Параметры программы:**
@@ -90,7 +89,7 @@ dir_path=c:\test\dfm_data\
 , где параметры:
 * **ext** - маска файлов
 * **is_save_dir_path** - сохранять ли в параметрах директорию, 1 - да / 0 - нет (по-умолчанию)
-* **dir_path** - сохраненный
+* **dir_path** - сохраненный путь
 
 
 ***Зависимости:***
