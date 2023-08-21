@@ -44,6 +44,40 @@ uses DfmConverting, AppParameters;
 
 {$R *.dfm}
 
+function GetFileVersion(filename: string = ''; const Fmt: string = '%d.%d.%d.%d'): string;
+var
+  iBufferSize: DWORD;
+  iDummy: DWORD;
+  pBuffer: Pointer;
+  pFileInfo: Pointer;
+  iVer: array[1..4] of word;
+begin
+  // set default value
+  if filename = '' then
+    FileName := Application.ExeName;
+  Result := '';
+  // get size of version info (0 if no version info exists)
+  iBufferSize := GetFileVersionInfoSize(PChar(filename), iDummy);
+  if (iBufferSize > 0) then
+  begin
+    Getmem(pBuffer, iBufferSize);
+    try
+    // get fixed file info
+      GetFileVersionInfo(PChar(filename), 0, iBufferSize, pBuffer);
+      VerQueryValue(pBuffer, '\', pFileInfo, iDummy);
+    // read version blocks
+      iVer[1] := HiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionMS);
+      iVer[2] := LoWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionMS);
+      iVer[3] := HiWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
+      iVer[4] := LoWord(PVSFixedFileInfo(pFileInfo)^.dwFileVersionLS);
+    finally
+      Freemem(pBuffer);
+    end;
+    // format result string
+    Result := Format(Fmt, [iVer[1], iVer[2], iVer[3], iVer[4]]);
+  end;
+end;
+
 //===================================
 //== ПЕРЕВОД DFM ИЗ UNICODE В ANSI ==
 //===================================
@@ -231,7 +265,7 @@ end;
 
 procedure TfromMain.FormCreate(Sender: TObject);
 begin
-  fromMain.Caption := APP_NAME;
+  fromMain.Caption := APP_NAME + ' (ver.' + GetFileVersion('', '%d.%d.%d') + ')';
 end;
 
 procedure TfromMain.edExtExit(Sender: TObject);

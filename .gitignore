@@ -7,3 +7,5 @@
 *.ddp
 /resources/ico/*
 *.dcu
+/bin/dfmconvert.exe
+/builds/*
